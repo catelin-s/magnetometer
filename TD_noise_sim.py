@@ -71,10 +71,8 @@ class TDNoiseSim(NoiseSim):
 
         # take measurements at each time
         for k in range(n):
-            v_k = np.random.normal(0, sigma, 3)
-
             M = step_signal[k] * mtq
-            X_obs[k] = self.measure_B_full(A[:, :, k], H[k, :], 0, v_k, G=G, 
+            X_obs[k] = self.measure_B_full(A[:, :, k], H[k, :], 0, sigma, G=G, 
                                           M=M, S=S, I_elec=I_elec[k])
             
             true_B[k] = A[:, :, k] @ H[k, :]
@@ -145,7 +143,7 @@ class TDNoiseSim(NoiseSim):
 
         return X_obs, true_B
     
-    
+
     # simulate noise over time
     # inputs: A -- 3x3xn attitude matrix
     #         H -- nx3 planet mag field matrix
