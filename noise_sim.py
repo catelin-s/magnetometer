@@ -65,15 +65,7 @@ class NoiseSim:
         self.D = D_sf @ D_no @ D_si @ D_m
     
         return self.D
-    
 
-    # manually input scaling matrix
-    # inputs: D_scale -- 3x3 scaling matrix
-
-    def set_scaling_matrix(self, D_scale):
-        self.D = D_scale
-    
-        return self.D
 
     # create bias vector
     # inputs: bias -- 3x1 bias vector
@@ -151,8 +143,7 @@ class NoiseSim:
         measurements = np.zeros((n, 3))
 
         for i in range(n):
-            v = np.random.normal(0, sigma, 3)
-            meas = self.measure_B_basic(A, H, v)
+            meas = self.measure_B_basic(A, H, sigma)
             measurements[i] = meas
             errors[i] = meas - self.true_B
 
@@ -179,8 +170,7 @@ class NoiseSim:
         ideal_pts = np.zeros((n, 3))
         for i in range(n):
             A = random_rotation()
-            v = np.random.normal(0, sigma, 3)
-            ideal_pts[i] = self.measure_B_basic(A, H, v, D_ideal, b_ideal)
+            ideal_pts[i] = self.measure_B_basic(A, H, sigma, D_ideal, b_ideal)
 
         fig = plt.figure(figsize=(14, 7))
 
@@ -192,8 +182,7 @@ class NoiseSim:
         # find misaligned, biased magnetometer measurements
         for i in range(n):
             A = random_rotation()
-            v = np.random.normal(0, sigma, 3)
-            measured_pts[i] = self.measure_B_basic(A, H, v, D, b)
+            measured_pts[i] = self.measure_B_basic(A, H, sigma, D, b)
 
         ax = fig.add_subplot(1, 1, 1, projection='3d')
         ax.xaxis.pane.fill = False
