@@ -87,19 +87,24 @@ class NoiseSim:
     # create model of magnetometer measurement w/ noise (basic)
     # inputs: A -- 3x3 attitude matrix
     #         H -- 3x1 magnetic field matrix
-    #         v -- 3x1 Gaussian noise vector
+    #         sigma -- magnetometer Gaussian noise std
+    #         D -- scaling matrix (optional)
+    #         b -- 3x1 bias vector (optional)
 
-    def measure_B_basic(self, A, H, v, D=None, b=None):
+    def measure_B_basic(self, A, H, sigma=2.0, D=None, b=None):
         if D is None:
             D = self.D
         
         if b is None:
             b = self.bias
+
+        v = np.random.normal(0, sigma, 3)
     
         inv_scale = np.linalg.inv(D)
         inv_mag_field = inv_scale @ (A @ H.T).T
         self.true_B = A @ H.T
-        self.measured_B = inv_mag_field + + b.T + v.T
+        
+        self.measured_B = inv_mag_field + b.T + v.T
     
         return self.measured_B.T
     
@@ -110,14 +115,14 @@ class NoiseSim:
     #        A -- 3x3 attitude matrix
     #        H -- 3x1 magnetic field matrix
     #        b_tv -- 3x1 time-varying bias bector
-    #        v -- 3x1 Gaussian noise vector
+    #        sigma -- magnetometer Gaussian noise std
     #
     #        G -- 3x3 MTQ coupling matrix
     #        M -- 3x1 MTQ magnetic dipole moment vector
     #        S -- 3xC electronics coupling matrix (C = # current channels)
     #        I_elec  -- Cx1 electronics current vector
 
-    def measure_B_full(self, A, H, b_tv, v, G=None, M=None, S=None, I_elec=None):
+    def measure_B_full(self, A, H, b_tv, sigma=2.0, G=None, M=None, S=None, I_elec=None):
         b_total = self.bias + b_tv
 
         # add MTQ noise
@@ -128,7 +133,7 @@ class NoiseSim:
         if S is not None and I_elec is not None:
             b_total += S @ I_elec
         
-        return self.measure_B_basic(A, H, v, b=b_total)  
+        return self.measure_B_basic(A, H, sigma, b=b_total)  
     
     
     # simulate magnetometer measurements (basic)
