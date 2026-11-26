@@ -1,3 +1,9 @@
+# TD_noise_sim.py
+# by: Catelin Smith
+# description: expanded version of NoiseSim class that incorporates
+#              time-dependence, stray/step noise, and magnetic dipoles
+
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -25,6 +31,7 @@ class TDNoiseSim(NoiseSim):
     # calculate magnetic dipole
     # inputs: r -- 3x1 position vector
     #         m -- 3x1 dipole moment vector
+    # return: 3x1 magnetic dipole vector
 
     def dipole_field(self, r, m):
         mu0_4pi = 1e-7
