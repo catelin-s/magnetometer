@@ -1,3 +1,9 @@
+# noise_sim.py
+# by: Catelin Smith
+# description: sets up magnetometer noise simulation
+#              using a given scaling matrix and bias
+
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -41,6 +47,7 @@ class NoiseSim:
     #         rho, lamb, phi -- angles of nonorthogonality
     #         eps -- 3x1 vector for misalignment 
     #         D_si -- 3x3 matrix for soft iron error
+    # returns: D -- 3x3 total scaling matrix
 
     def set_scaling_matrix(self, ksi, rho, lamb, phi, eps, D_si):
     
@@ -69,6 +76,7 @@ class NoiseSim:
 
     # create bias vector
     # inputs: bias -- 3x1 bias vector
+    # returns: bias
     
     def set_bias(self, bias):
         self.bias = bias
@@ -82,6 +90,7 @@ class NoiseSim:
     #         sigma -- magnetometer Gaussian noise std
     #         D -- scaling matrix (optional)
     #         b -- 3x1 bias vector (optional)
+    # returns: measured_B -- 3x1 measured magnetic field vector
 
     def measure_B_basic(self, A, H, sigma=2.0, D=None, b=None):
         if D is None:
@@ -113,6 +122,7 @@ class NoiseSim:
     #        M -- 3x1 MTQ magnetic dipole moment vector
     #        S -- 3xC electronics coupling matrix (C = # current channels)
     #        I_elec  -- Cx1 electronics current vector
+    # returns: measured_B -- 3x1 measured magnetic field vector
 
     def measure_B_full(self, A, H, b_tv, sigma=2.0, G=None, M=None, S=None, I_elec=None):
         b_total = self.bias + b_tv
